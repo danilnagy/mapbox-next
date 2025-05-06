@@ -13,6 +13,16 @@ import Map, { Marker, NavigationControl, ViewState } from "react-map-gl/mapbox";
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN as string;
 const DEBOUNCE_MS = 300;
 
+/* ---------- Types for geocoder response ---------- */
+interface GeocodeFeature {
+  id: string;
+  place_name: string;
+  center: [number, number]; // [lon, lat]
+}
+interface GeocodeResponse {
+  features: GeocodeFeature[];
+}
+
 export default function MapWithSearch() {
   /* -------------- camera -------------- */
   const [viewState, setViewState] = useState<ViewState>({
@@ -31,7 +41,7 @@ export default function MapWithSearch() {
 
   /* -------------- search UI -------------- */
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<GeocodeFeature[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(-1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -70,7 +80,7 @@ export default function MapWithSearch() {
         `&access_token=${TOKEN}`;
 
       try {
-        const json = await fetch(url).then((r) => r.json());
+        const json: GeocodeResponse = await fetch(url).then((r) => r.json());
         setSuggestions(json.features || []);
         setHighlightIdx(-1);
         setDropdownOpen(true); // show fresh results
@@ -96,7 +106,7 @@ export default function MapWithSearch() {
   }, [dropdownOpen, suggestions.length]);
 
   /* go to place (click or enter) */
-  function goToPlace(feature?: any) {
+  function goToPlace(feature?: GeocodeFeature) {
     const target = feature ?? suggestions[0];
     if (!target) return;
 
@@ -210,7 +220,7 @@ export default function MapWithSearch() {
         {marker && (
           <Marker longitude={marker.lon} latitude={marker.lat} anchor="bottom">
             <span className="relative block h-4 w-4">
-              <span className="absolute inset-0 rounded-full bg-red-600 animate-ping opacity-75" />
+              <span className="absolute inset-0 rounded-full bg-blue-600 animate-ping opacity-75" />
               <span className="absolute inset-0 rounded-full bg-blue-600" />
             </span>
           </Marker>
