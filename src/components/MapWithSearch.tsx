@@ -154,7 +154,12 @@ export default function MapWithSearch() {
       {/* ------------ Search bar + dropdown ------------ */}
       <form
         onSubmit={handleSubmit}
-        className="absolute z-50 top-4 left-1/2 -translate-x-1/2 w-80"
+        className="
+          absolute z-50 top-4 left-1/2 -translate-x-1/2
+          w-[90vw]          /* fill 90 % of viewport width on mobile */
+          max-w-xs          /* cap at ~20 rem (xs) */
+          sm:max-w-md       /* bump to ~28 rem on ≥ 640 px screens */
+        "
       >
         <div ref={wrapperRef} className="relative">
           <input
@@ -176,7 +181,7 @@ export default function MapWithSearch() {
           {dropdownOpen && suggestions.length > 0 && (
             <ul
               className="
-                            absolute left-0 right-0 mt-px rounded-b-md overflow-hidden shadow
+                            absolute left-0 right-0 mt-0 rounded-b-md overflow-hidden shadow
                             max-h-60 overflow-y-auto nice-scrollbar
                             pb-2           /* ⬅︎ bottom inner space */
                             scroll-pb-2    /* ⬅︎ makes the space count when you scroll  */
@@ -215,7 +220,7 @@ export default function MapWithSearch() {
         mapStyle="mapbox://styles/mapbox/streets-v12"
         style={{ width: "100%", height: "100%" }}
       >
-        <NavigationControl position="top-left" />
+        <NavigationControl position="bottom-right" />
 
         {marker && (
           <Marker longitude={marker.lon} latitude={marker.lat} anchor="bottom">
