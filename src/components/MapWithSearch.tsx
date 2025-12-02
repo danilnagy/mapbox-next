@@ -154,30 +154,32 @@ export default function MapWithSearch() {
   //   }
   // }
 
-  function haversineDistanceMiles(
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ): number {
-    const R = 3958.8; // Earth radius in miles
-    const toRad = (deg: number) => (deg * Math.PI) / 180;
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
+  // function haversineDistanceMiles(
+  //   lat1: number,
+  //   lon1: number,
+  //   lat2: number,
+  //   lon2: number
+  // ): number {
+  //   const R = 3958.8; // Earth radius in miles
+  //   const toRad = (deg: number) => (deg * Math.PI) / 180;
+  //   const dLat = toRad(lat2 - lat1);
+  //   const dLon = toRad(lon2 - lon1);
 
-    const a =
-      Math.sin(dLat / 2) ** 2 +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  //   const a =
+  //     Math.sin(dLat / 2) ** 2 +
+  //     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   return R * c;
+  // }
 
   async function fetchPOIs(lon: number, lat: number, radius: number = 1) {
     // const categories = POI_CATEGORIES.join(",");
     // const radiusMeters = milesToMeters(radius); // Default is 1 mile
     // const bbox = getBoundingBox(lon, lat, radiusMeters * 1.25).join(",");
     const limit = 25;
+
+    console.log(radius);
 
     const requests = POI_CATEGORIES.map((category) => {
       const url =
@@ -316,9 +318,11 @@ export default function MapWithSearch() {
     return sortedData;
   }, [pois, mapRef.current?.getMap(), viewState, clickedPlaces]);
 
-  const visible = showAllMarkers
-    ? useMarkerCulling(mapRef.current?.getMap(), [], 100)
-    : useMarkerCulling(mapRef.current?.getMap(), sorted.toReversed(), 100);
+  const visible = useMarkerCulling(
+    mapRef.current?.getMap(),
+    showAllMarkers ? [] : sorted.toReversed(),
+    100
+  );
 
   const sortedIds = sorted.map((item) => item.properties.mapbox_id);
 
@@ -432,11 +436,11 @@ export default function MapWithSearch() {
           // const isVisible = true;
           const zIndex = sortedIds.indexOf(p.properties.mapbox_id); // “later in list” ▶ sits on top
 
-          const colour = isSchool
-            ? "bg-green-600"
-            : isGrocery
-            ? "bg-red-500"
-            : "bg-gray-500";
+          // const colour = isSchool
+          //   ? "bg-green-600"
+          //   : isGrocery
+          //   ? "bg-red-500"
+          //   : "bg-gray-500";
 
           // return (
           //   <Marker
